@@ -8,26 +8,32 @@ export default class Status extends Component {
     super(props);
     this.state = {
       dataSource:{
-        'level':0.5,
+        'level':0,
       }
     }
+}
+componentDidMount(){
+  this.timer = setInterval(()=> this.getLevel(),1000)
+ }
 
 
-  }
-  componentDidMount(){
-     fetch('http://192.168.137.1/tank/C109')
-        .then ( response => { console.log("res", response); return response.json()} )
-        .then( (responseJson) => {
-          console.log(responseJson)
-            this.setState({
-                dataSource: responseJson,
-            })
-        })
-        .catch( err => {
-          console.log("Helloooo")
-          console.log(err)
-        })
-  }
+  async  getLevel(){
+      console.log(this.state.dataSource.level)
+       fetch('http://192.168.0.102:8080/tanks/C101')
+          .then ( response => { console.log("res ", response);return response.json()} )
+          .then( (responseJson) => {
+            console.log(responseJson)
+              this.setState({
+                  dataSource: responseJson,
+                })
+                console.log(this.state.dataSource.level)
+          })
+          .catch( err => {
+            console.log("Helloooo")
+            console.log(err)
+          })
+    }
+
   render(){
     return(
 <View style = {{ flex:1 }}>
@@ -37,8 +43,8 @@ export default class Status extends Component {
   centerComponent={{ text: 'Status', style: { color: '#fff' } }}
   rightComponent={{ icon: 'home', color: '#fff' }} />
   <View style = { {flex: 1,justifyContent:'center', alignItems:'center'} }>
-    <Text style={styles.noteText}>Aeration Tank</Text>
-  <Progress.Pie progress={this.state.dataSource.level} size={200} />
+    <Text style={styles.noteText}>Aeration Tank Quantity = {Number(this.state.dataSource.level)}</Text>
+  <Progress.Pie animated={false} progress= {Number(this.state.dataSource.level)/100} size={200} />
 
   </View>
   </View>

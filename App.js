@@ -14,6 +14,11 @@ export default class App extends Component{
     );
   }
 }
+class Hidden extends React.Component {
+  render() {
+    return null;
+  }
+}
 const CustomDrawerContentComponent = (props) =>(
   <Container>
     <Header style={{ height:200, justifyContent:'center', alignItems:'center'}}>
@@ -36,8 +41,13 @@ const Myapp = createDrawerNavigator({
   Main:{
     screen:Main
   },
-  Home:{screen : Login},
-  Profile:{screen : SignUp2},
+  Home:{screen : Login,
+    navigationOptions: {
+       drawerLabel: <Hidden />
+     }},
+  Profile:{screen : SignUp2,navigationOptions: {
+     drawerLabel: <Hidden />
+   }},
 },{
   initialRouteName:'Home',
     contentComponent: CustomDrawerContentComponent,

@@ -22,6 +22,32 @@ export default class SignUp2 extends Component {
       PickerValue:''
     }
   }
+  signup = () =>{
+    console.log(this.state.UserID)
+    console.log(this.state.password)
+    console.log(this.state.role)
+    fetch('http://192.168.0.102:8080/signup', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      id: this.state.UserID,
+      password: this.state.password,
+      role : this.state.PickerValue,
+    })
+  })
+  .then((response)=> response.json())
+  .then((res) => {
+    console.log(res)
+      this.props.navigation.navigate("Home")
+
+  }).catch(err=>
+  {console.log("Eooro")
+    console.log(err)});
+  }
+
 
 
   onClickListener = (viewId) => {
@@ -57,7 +83,7 @@ export default class SignUp2 extends Component {
               placeholder="User ID"
               keyboardType="email-address"
 
-              onChangeText={(fullName) => this.setState({fullName})}/>
+              onChangeText={(UserID) => this.setState({UserID})}/>
         </View>
         <View style={styles.inputContainer}>
           <Image style={styles.inputIcon} source={{uri: 'https://png.icons8.com/envelope/ultraviolet/50/3498db'}}/>
@@ -65,7 +91,7 @@ export default class SignUp2 extends Component {
               placeholder="Email ID"
               keyboardType="email-address"
 
-              onChangeText={(fullName) => this.setState({fullName})}/>
+              />
         </View>
 
         <View style={styles.inputContainer}>
@@ -82,7 +108,7 @@ export default class SignUp2 extends Component {
               placeholder="Age"
               keyboardType="numeric"
 
-              onChangeText={(fullName) => this.setState({fullName})}/>
+              onChangeText={(PickerValue) => this.setState({PickerValue})}/>
         </View>
         <Picker
              style={styles.inputContainer}
@@ -98,7 +124,7 @@ export default class SignUp2 extends Component {
           </Picker>
 
 
-        <TouchableHighlight style={[styles.buttonContainer, styles.signupButton]} onPress={() =>navigate('Home')}>
+        <TouchableHighlight style={[styles.buttonContainer, styles.signupButton]} onPress={this.signup}>
           <Text style={styles.signUpText}> Sign Up </Text>
         </TouchableHighlight>
 
