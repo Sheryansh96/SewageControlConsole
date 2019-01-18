@@ -1,41 +1,39 @@
 import React, { Component } from 'react';
 import { AppRegistry, Text, View, StyleSheet, TextInput, ScrollView, TouchableOpacity, Image,Picker } from 'react-native';
-import Status from './Status';
-export default class Setup extends Component{
+
+export default class StSetup extends Component{
    constructor(props) {
     super(props);
     this.state = {
-      tankid: '',
-      tanklen: '',
-      tankbre:'',
-      tankwid:'',
-      PickerValue:'',
-      level:''
+      stpname: '',
+      stpstreet:'',
+      stpstate:'',
+      stppin:'',
+
     }
   }
-  tsignup(id){
-    console.log(this.state.tankwid)
-    console.log(this.state.tanklen)
-    console.log(this.state.tankbre)
+  tsetup(id){
+    console.log(this.state.stpname)
+    console.log(this.state.stpstreet)
     console.log(id)
-    fetch('http://192.168.0.104:8080/settank', {
+    fetch('http://192.168.0.104:8080/setstp', {
     method: 'POST',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      height: this.state.tankwid,
-      length: this.state.tanklen,
-      breadth : this.state.tankbre,
-			level : this.state.level,
-      stpid : id,
+      name: this.state.stpname,
+      street : this.state.stpstreet,
+      state: this.state.stpstate,
+      pin:this.state.stppin,
+      user:id,
     })
   })
   .then((response)=> response.json())
   .then((res) => {
     console.log(res)
-      this.props.navigation.navigate("Home")
+      this.props.navigation.navigate("TankSetup",{id:res.id})
 
   }).catch(err=>
   {console.log("Eooro")
@@ -61,64 +59,54 @@ export default class Setup extends Component{
 
 	render(){
     const { navigation } = this.props
-    const id = navigation.getParam('id')
-    console.log(id)
+    const id = navigation.getParam('Userid')
+    console.log('Hello ',id)
 		return(
 			<View style={styles.container}>
            <View style={styles.logoContainer}>
           <Image resizeMode="contain" style={styles.logo} source={require('../Components/images/login_icon.jpg')} />
 
 
-          <Text style={styles.titleText}> TANK SET-UP </Text>
+          <Text style={styles.titleText}> STP SET-UP </Text>
           </View>
         <View style={styles.inputContainer}>
-          <Image style={styles.inputIcon} source={{uri: 'https://png.icons8.com/envelope/oil-industry/50/3498db'}}/>
+          <Image style={styles.inputIcon} source={{uri: 'https://png.icons8.com/oil-industry/50/3498db'}}/>
           <TextInput style={styles.inputs}
-              placeholder="Tank Length"
-              keyboardType="numeric"
+              placeholder="STP Name"
+              keyboardType="email-address"
 
-              onChangeText={(tanklen) => this.setState({tanklen})}/>
+              onChangeText={(stpname) => this.setState({stpname})}/>
         </View>
         <View style={styles.inputContainer}>
-          <Image style={styles.inputIcon} source={{uri: 'https://png.icons8.com/envelope/oil-industry/50/3498db'}}/>
+          <Image style={styles.inputIcon} source={{uri: 'https://png.icons8.com/envelope/50/3498db'}}/>
           <TextInput style={styles.inputs}
-              placeholder="Tank Breadth"
-              keyboardType="numeric"
+              placeholder="STP Street"
+              keyboardType="email-address"
 
-              onChangeText={(tankbre) => this.setState({tankbre})}/>
+              onChangeText={(stpstreet) => this.setState({stpstreet})}/>
         </View>
         <View style={styles.inputContainer}>
-          <Image style={styles.inputIcon} source={{uri: 'https://png.icons8.com/envelope/oil-industry/50/3498db'}}/>
+          <Image style={styles.inputIcon} source={{uri: 'https://png.icons8.com/envelope/50/3498db'}}/>
           <TextInput style={styles.inputs}
-              placeholder="Tank Height"
-              keyboardType="numeric"
+              placeholder="STP State"
+              keyboardType="email-address"
 
-              onChangeText={(tankwid) => this.setState({tankwid})}/>
+              onChangeText={(stpstate) => this.setState({stpstate})}/>
         </View>
-         <Picker
-             style={styles.inputContainer}
-            selectedValue={this.state.PickerValue}
-            onValueChange={(itemValue,itemIndex)=>this.setState({PickerValue:itemValue})}>
-            <Picker.Item label="Pick State" value=""/>
-             <Picker.Item label="true" value="true"/>
-              <Picker.Item label="false" value="false"/>
-          </Picker>
-
-
-<View style={styles.inputContainer}>
-          <Image style={styles.inputIcon} source={{uri: 'https://png.icons8.com/three-cell-cyclorama-lights/ultraviolet/50/3498db'}}/>
+        <View style={styles.inputContainer}>
+          <Image style={styles.inputIcon} source={{uri: 'https://png.icons8.com/envelope/50/3498db'}}/>
           <TextInput style={styles.inputs}
-              placeholder="Level [1-100]"
+              placeholder="STP Pin"
               keyboardType="numeric"
 
-              onChangeText={(level) => this.setState({level})}/>
+              onChangeText={(stppin) => this.setState({stppin})}/>
         </View>
 
 
 
 
         <TouchableOpacity style={styles.buttonContainer}
-                     onPress={()=>this.tsignup(id)}>
+                     onPress={()=>this.tsetup(id)}>
              <Text  style={styles.buttonText}>SUBMIT</Text>
         </TouchableOpacity>
        </View>

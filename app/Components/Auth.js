@@ -30,7 +30,7 @@ export default class Login extends Component {
 login = () =>{
   console.log(this.state.UserID)
   console.log(this.state.password)
-  fetch('http://192.168.0.102:8080/login', {
+  fetch('http://192.168.0.104:8080/login', {
   method: 'POST',
   headers: {
     Accept: 'application/json',
@@ -47,8 +47,7 @@ login = () =>{
       if(res.code == 0){
         var user = res.message;
         console.log(user)
-        AsyncStorage.setItem('User', user);
-        this.props.navigation.navigate("Status")
+        this.props.navigation.navigate("Status", {log:res.tankid})
       }else{
         alert(res.mesage);
       }
@@ -72,7 +71,7 @@ login = () =>{
     }
   }
   static navigationOptions = {
-    title: 'Home',
+    title: 'Logout',
   };
 
 
@@ -116,9 +115,6 @@ login = () =>{
 
         <TouchableHighlight style={[styles.buttonContainer, styles.signupButton]} onPress={this.login}>
           <Text style={styles.signUpText}>Log In</Text>
-        </TouchableHighlight>
-         <TouchableHighlight style={[styles.buttonContainer, styles.signupButton]} onPress={() => this.onClickListener('forgot_password')}>
-          <Text style={styles.signUpText}>Forgot Password?</Text>
         </TouchableHighlight>
 
         <TouchableHighlight style={[styles.buttonContainer, styles.signupButton]} onPress={()=> navigate('Profile')}>

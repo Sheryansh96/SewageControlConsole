@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { AppRegistry, Text, View, StyleSheet, TextInput, ScrollView, TouchableOpacity, } from 'react-native';
+import { AppRegistry, Text, View,AsyncStorage , StyleSheet, TextInput, ScrollView, TouchableOpacity, } from 'react-native';
 import Note from './Note';
 import {DrawerNavigator} from 'react-navigation';
 import { Header,Icon,Button,Container,Content,Left } from 'react-native-elements';
-export default class Main extends Component {
+export default class Log extends Component {
 
   constructor(props){
     super(props);
@@ -14,8 +14,26 @@ export default class Main extends Component {
     }
   }
 static navigationOptions = {
-  drawerLabel:"Main",
+  drawerLabel:"Log",
 };
+componentDidMount(){
+  AsyncStorage.getItem('notes')
+  .then((token) => {
+    console.log(token);
+    var d = new Date();
+    var joined = {'date':d.getFullYear()+"/"+(d.getMonth() + 1)+"/"+d.getDate(),
+      'note': token}
+    this.setState({ myArray: joined })
+    this.state.noteArray.push({
+      'date':d.getFullYear()+"/"+(d.getMonth() + 1)+"/"+d.getDate(),
+      'note': token
+    });
+    this.setState({ noteArray: this.state.noteArray })
+    this.setState({ noteText: '' });
+  }).catch(err=>
+  {console.log("Eooro")
+    console.log(err)});
+ }
 
 
   render() {
@@ -24,6 +42,9 @@ static navigationOptions = {
       return <Note key={key} keyval={key} val={val}
       deleteMethod={ ()=> this.deleteNote(key) }/>
     });
+
+
+
     return (
       <View style = {{ flex:1 }}>
       <Header
@@ -32,7 +53,7 @@ static navigationOptions = {
       centerComponent={{ text: 'Logs', style: { color: '#fff' } }}
       rightComponent={{ icon: 'home', color: '#fff' }} />
       <View style={styles.container}>
-      
+
       <ScrollView style={styles.scrollContainer}>
       {notes}
       </ScrollView>

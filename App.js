@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import { AppRegistry, Text, View, StyleSheet,Image, TextInput, ScrollView, TouchableOpacity, } from 'react-native';
-import Main from './app/Components/Main';
+import Log from './app/Components/Main';
 import Status from './app/Components/Status';
 import Login from './app/Components/Auth';
 import SignUp2 from './app/Components/SignUp2';
+import TankSetup from './app/Components/TankSetup';
+import Tank from './app/Components/Tank';
 import img from './Image/STP.png';
+import StSetup from './app/Components/STPsetup'
 import { createDrawerNavigator, DrawerItems, StackNavigator,createStackNavigator } from 'react-navigation';
 import { Header,Icon,Button,Container,Content,Left,Body } from 'native-base';
 export default class App extends Component{
@@ -38,16 +41,33 @@ const Myapp = createDrawerNavigator({
   Status:{
     screen:Status
   },
-  Main:{
-    screen:Main
+  Log:{
+    screen:Log
+  },
+  Logout:{
+    screen:Login
   },
   Home:{screen : Login,
     navigationOptions: {
+      drawerLockMode: "locked-closed",
        drawerLabel: <Hidden />
      }},
   Profile:{screen : SignUp2,navigationOptions: {
+      drawerLockMode: "locked-closed",
      drawerLabel: <Hidden />
    }},
+   StSetup:{
+     screen:StSetup,navigationOptions: {
+         drawerLockMode: "locked-closed",
+        drawerLabel: <Hidden />
+      }
+   },
+   TankSetup:{
+     screen : TankSetup,navigationOptions: {
+         drawerLockMode: "locked-closed",
+        drawerLabel: <Hidden />
+      }
+   }
 },{
   initialRouteName:'Home',
     contentComponent: CustomDrawerContentComponent,
@@ -57,6 +77,18 @@ const Myapp = createDrawerNavigator({
 },
 
 )
+
+Myapp.navigationOptions = ({ navigation }) => {
+ name = (navigation.state.index !== undefined ? navigation.state.routes[navigation.state.index] : navigation.state.routeName)
+  let drawerLockMode = 'locked-closed'
+  if (name.routeName != 'Login' && name.routeName != 'SignUp2') {
+    drawerLockMode = 'unlocked'
+  }
+
+  return {
+    drawerLockMode,
+  };
+}
 
 
 const styles = StyleSheet.create({

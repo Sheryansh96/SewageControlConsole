@@ -8,9 +8,11 @@ import {
   TouchableHighlight,
   Image,
   Alert,
-  Picker
+  Picker,
+  ListView
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
+import renderIf from './renderIf';
 
 export default class SignUp2 extends Component {
 
@@ -19,14 +21,69 @@ export default class SignUp2 extends Component {
     this.state = {
       UserID: '',
       password: '',
-      PickerValue:''
+      PickerValue:'',
+      answer:[],
+      PickerValue2:'',
     }
   }
+  findSTP = () =>{
+
+      fetch('http://192.168.0.104:8080/findSTP', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: this.state.UserID,
+        password: this.state.password,
+        role : this.state.PickerValue,
+      })
+    })
+    .then((response)=> response.json())
+    .then((res) => {
+      console.log(res)
+      this.setState({answer:res})
+      console.log(this.state.answer)
+    }).catch(err=>
+    {console.log("Eooro")
+      console.log(err)});
+    }
+
+    renderRow(rowData) {
+       return (<Text>{rowData.id}</Text>);
+    }
+
+
+
+addTank(id){
+  console.log("in add tank "+id)
+  fetch('http://192.168.0.104:8080/addtank', {
+  method: 'POST',
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    username: this.state.UserID,
+    id : id
+  })
+})
+.then((response)=> response.json())
+.then((res) => {
+  console.log(res)
+  this.props.navigation.navigate("Home")
+}).catch(err=>
+{console.log("out")
+  console.log(err)});
+}
+
   signup = () =>{
     console.log(this.state.UserID)
     console.log(this.state.password)
-    console.log(this.state.role)
-    fetch('http://192.168.0.102:8080/signup', {
+    console.log(this.state.PickerValue)
+    console.log(this.state.PickerValue2)
+    fetch('http://192.168.0.104:8080/signup', {
     method: 'POST',
     headers: {
       Accept: 'application/json',
@@ -40,16 +97,19 @@ export default class SignUp2 extends Component {
   })
   .then((response)=> response.json())
   .then((res) => {
-    console.log(res)
-      this.props.navigation.navigate("Home")
+    console.log(this.state.PickerValue)
+      if(String(this.state.PickerValue) == 'admin'){
+        this.props.navigation.navigate("StSetup",{Userid:this.state.UserID})
+      }
+      else{
+      this.addTank(this.state.PickerValue2)
+    }
+
 
   }).catch(err=>
   {console.log("Eooro")
     console.log(err)});
   }
-
-
-
   onClickListener = (viewId) => {
     Alert.alert("Alert", "Button pressed "+viewId);
   }
@@ -68,9 +128,25 @@ export default class SignUp2 extends Component {
     title: 'Profile',
   };
 
+  validate = (text) => {
+  console.log(text);
+  let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
+  if(reg.test(text) === false)
+  {
+  console.log("Email is Not Correct");
+  this.setState({email:text})
+  return false;
+    }
+  else {
+    this.setState({email:text})
+    console.log("Email is Correct");
+  }
+  }
 
   render() {
     const {navigate} = this.props.navigation;
+    const helloMessage = <Text> Hello, JSX! </Text>;
+    const goodbyeMessage = <Text> Goodbye, JSX! </Text>;
     return (
       <View style={styles.container}>
       <View style={styles.logoContainer}>
@@ -90,7 +166,7 @@ export default class SignUp2 extends Component {
           <TextInput style={styles.inputs}
               placeholder="Email ID"
               keyboardType="email-address"
-
+              onChangeText={(text) => this.validate(text)}
               />
         </View>
 
@@ -113,16 +189,24 @@ export default class SignUp2 extends Component {
         <Picker
              style={styles.inputContainer}
             selectedValue={this.state.PickerValue}
-            onValueChange={(itemValue,itemIndex)=>this.setState({PickerValue:itemValue})}>
+            onValueChange={ (itemValue,itemIndex)=>this.setState({PickerValue:itemValue}, this.findSTP)}>
             <Picker.Item label="Choose your role" value=""/>
              <Picker.Item label="Admin" value="admin"/>
               <Picker.Item label="Operator" value="Operator"/>
               <Picker.Item label="Supervisor" value="supervisor"/>
-
-
-
+        </Picker>
+        {renderIf(this.state.PickerValue == 'Operator' || this.state.PickerValue == 'supervisor' ,
+          <Picker
+              style={styles.inputContainer}
+              selectedValue={this.state.PickerValue2}
+              onValueChange={(itemValue,itemIndex)=>{console.log("Item value",itemValue);this.setState({PickerValue2:itemValue})}}>
+                <Picker.Item label="Choose your STP" value=""/>
+              {this.state.answer.map((item) => {
+                  return(<Picker.Item label={item.name} value={item.id}/>)
+              })}
           </Picker>
 
+        )}
 
         <TouchableHighlight style={[styles.buttonContainer, styles.signupButton]} onPress={this.signup}>
           <Text style={styles.signUpText}> Sign Up </Text>
