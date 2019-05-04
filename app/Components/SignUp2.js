@@ -28,7 +28,7 @@ export default class SignUp2 extends Component {
   }
   findSTP = () =>{
 
-      fetch('http://192.168.0.104:8080/findSTP', {
+      fetch('http://192.168.43.96:8080/findSTP', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -58,7 +58,7 @@ export default class SignUp2 extends Component {
 
 addTank(id){
   console.log("in add tank "+id)
-  fetch('http://192.168.0.104:8080/addtank', {
+  fetch('http://192.168.43.96:8080/addtank', {
   method: 'POST',
   headers: {
     Accept: 'application/json',
@@ -83,7 +83,7 @@ addTank(id){
     console.log(this.state.password)
     console.log(this.state.PickerValue)
     console.log(this.state.PickerValue2)
-    fetch('http://192.168.0.104:8080/signup', {
+    fetch('http://192.168.43.96:8080/signup', {
     method: 'POST',
     headers: {
       Accept: 'application/json',

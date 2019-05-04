@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ProgressBarAndroid,AppRegistry, Text, View, StyleSheet, TextInput, ScrollView, TouchableOpacity, } from 'react-native';
+import { ProgressBarAndroid,AppRegistry, Text, View, StyleSheet, TextInput, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { Header,Icon,Button,Container,Content,Left } from 'react-native-elements';
 import * as Progress from 'react-native-progress';
 import ProgressCircle from 'react-native-progress-circle';
@@ -12,22 +12,71 @@ export default class Status extends Component {
       dataSource:{
         'level':0,
 
+      },
+      methane:{
+        'level':0,
       }
     }
 }
-componentDidMount(){
+  componentDidMount(){
+  this.time = setInterval(()=> this.getError(),10000)
   const { navigation } = this.props
   const tankid = navigation.getParam('log')
-  this.timer = setInterval(()=> this.getLevel(tankid),1000)
+  this.timer = setInterval(()=>this.getLevel(tankid),1000)
+  
+
  }
  componentWillUnmount() {
    clearInterval(this.timer)
+   clearInterval(this.time)
  }
-
-
+ getError(){
+   fetch('http://192.168.43.96:3000/tent/')
+   .then(response => { console.log("resMethan", response);return response.json()})
+   .then((res)=>{
+     console.log("Methane");
+     console.log(res);
+     this.getAlert();
+      return;
+     
+   }).catch(errr => 
+    { console.log("err in meth")
+      console.log(errr)})
+ }
+getAlert(){
+   console.log("inside Alert")
+  Alert.alert(
+    "Start Motor?",
+    "Carbondi-oxide Level Optimum",
+    [
+      { text: "Yes", onPress(){ console.log("later pressed")
+      fetch('http://192.168.43.96:3000/blink/')
+      .then(response => response.json()
+      .then((res)=>{
+        console.log("Updated");
+      
+      }).catch(err=>{
+        console.log(err)
+      })).catch(errr => 
+       { console.log("err in Updating")
+         console.log(errr)})
+  }
+       },
+      {
+        text: "No",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel"
+      },
+      { text: "OK", onPress: () => console.log("OK Pressed") }
+    ],
+    { cancelable: false }
+  );
+ 
+ }
+ 
   getLevel(tank){
       console.log(this.state.dataSource.level)
-       fetch('http://192.168.0.104:8080/tanks/'+tank)
+       fetch('http://192.168.43.96:8080/tanks/'+tank)
           .then ( response => { console.log("res", response);return response.json()} )
           .then( (responseJson) => {
             console.log(responseJson)
@@ -35,8 +84,7 @@ componentDidMount(){
                   dataSource: responseJson,
                 })
               if(Number(this.state.dataSource.level) > 90){
-
-                  let obj = 'Overflow'
+                let obj = 'Overflow'
                 AsyncStorage.setItem('notes',obj)
                 AsyncStorage.getItem('notes')
                 .then((token) => {
@@ -83,8 +131,10 @@ componentDidMount(){
           >
               <Text style={{ fontSize: 18 }}>{Number(this.state.dataSource.level)}%</Text>
           </ProgressCircle>
-
+          
+         
   </View>
+  
   </View>
 
 
@@ -105,4 +155,5 @@ const styles = StyleSheet.create({
       alignItems:'center',
 
   },
+  
 });

@@ -16,7 +16,7 @@ export default class StSetup extends Component{
     console.log(this.state.stpname)
     console.log(this.state.stpstreet)
     console.log(id)
-    fetch('http://192.168.0.104:8080/setstp', {
+    fetch('http://192.168.43.96:8080/setstp', {
     method: 'POST',
     headers: {
       Accept: 'application/json',

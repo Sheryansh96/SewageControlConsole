@@ -30,7 +30,7 @@ export default class Login extends Component {
 login = () =>{
   console.log(this.state.UserID)
   console.log(this.state.password)
-  fetch('http://192.168.0.104:8080/login', {
+  fetch('http://192.168.43.96:8080/login', {
   method: 'POST',
   headers: {
     Accept: 'application/json',

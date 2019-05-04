@@ -21,7 +21,7 @@ export default class Setup extends Component{
     console.log(this.state.tanklen)
     console.log(this.state.tankbre)
     console.log(id)
-    fetch('http://192.168.0.104:8080/settank', {
+    fetch('http://192.168.0.101:8080/settank', {
     method: 'POST',
     headers: {
       Accept: 'application/json',
@@ -51,7 +51,7 @@ export default class Setup extends Component{
     console.log(this.state.tanklen)
     console.log(this.state.tankbre)
     console.log(id)
-    fetch('http://192.168.0.104:8080/settank', {
+    fetch('http://192.168.43.96:8080/settank', {
     method: 'POST',
     headers: {
       Accept: 'application/json',
